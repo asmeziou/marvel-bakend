@@ -48,7 +48,14 @@ router.post("/favoris/comic/add", async (req, res) => {
 
 router.get("/favoris", async (req, res) => {
   try {
-    const { token } = req.query;
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+      return res.status(401).json({ message: "Token manquant" });
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+
     const user = await User.findOne({ token });
 
     if (!user) {
