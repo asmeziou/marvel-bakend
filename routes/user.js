@@ -9,31 +9,21 @@ const User = require("../models/User");
 
 router.post("/user/signup", async (req, res) => {
   try {
-    // console.log(req.body);
     // ici on contrôle que toutes les données nous parviennent
     if (!req.body.username || !req.body.email || !req.body.password) {
       return res.status(400).json({ message: "Missing informations" });
     }
-    // {
-    //   username: 'JohnDoe',
-    //   email: 'johndoe@lereacteur.io',
-    //   password: 'azerty',
-    //   newsletter: true
-    // }
+
     const isEmailAlreadyExist = await User.findOne({ email: req.body.email });
     if (isEmailAlreadyExist) {
       return res.status(409).json({ message: "Email already exist" });
     }
 
     const token = uid(32);
-    // console.log(token); // u5LOHQoXUJxxAL5cCGaMU5nE2wk91nxv
-    const salt = uid(16);
-    // console.log(salt); // 4Le8tzG9twAxnlub
-    const hash = SHA256(req.body.password + salt).toString(encBase64);
-    // const hash2 = encBase64.stringify(SHA256(req.body.password + salt));
 
-    // console.log(hash); // jDbwgI3nQbNIcUqpN4Z8VxdkO9f/T+CbVE4dCJj144c=
-    // console.log(hash2); // jDbwgI3nQbNIcUqpN4Z8VxdkO9f/T+CbVE4dCJj144c=
+    const salt = uid(16);
+
+    const hash = SHA256(req.body.password + salt).toString(encBase64);
 
     // CREATION DE L'UTILISATEUR :
     const newUser = new User({
@@ -48,7 +38,6 @@ router.post("/user/signup", async (req, res) => {
       salt: salt,
     });
 
-    // console.log(newUser);
     await newUser.save();
     const objectResponse = {
       _id: newUser._id,

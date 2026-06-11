@@ -15,6 +15,10 @@ const api_key = process.env.YOUR_API_KEY;
 const userRoutes = require("./routes/user");
 app.use(userRoutes);
 
+// import et utilisation des routes :
+const favoriRoutes = require("./routes/favori");
+app.use(favoriRoutes);
+
 app.get("/", (req, res) => {
   try {
     return res.status(200).json("Bienvenue sur l'API Marvel!!");
